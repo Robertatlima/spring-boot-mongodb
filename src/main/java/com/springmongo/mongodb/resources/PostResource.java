@@ -9,13 +9,15 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import com.springmongo.mongodb.domain.Post;
+import com.springmongo.mongodb.resources.util.URL;
 import com.springmongo.mongodb.services.PostService;
 
 @RestController
@@ -49,5 +51,12 @@ public class PostResource {
  	public ResponseEntity<Post> delete(@PathVariable String id) {
 		postService.delete(id);
 		return ResponseEntity.noContent().build();
+	}
+	
+	@RequestMapping(value="/titlesearch", method=RequestMethod.GET)
+ 	public ResponseEntity<List<Post>> findByTitle(@RequestParam(value="text", defaultValue="") String text) {
+		text = URL.decodeParam(text);
+		List<Post> list = postService.findByTitle(text);
+		return ResponseEntity.ok().body(list);
 	}
 }
